@@ -5,7 +5,7 @@ const postSchema = mongoose.Schema({
     title: {type: String, required: true},
     content: {type: String, required: true},
     timestamp: Date,
-    author: String,
+    author: {type: mongoose.Schema.Types.ObjectId, ref:'User', required: true},
     allowed: {type: Boolean, default: false}
 });
 

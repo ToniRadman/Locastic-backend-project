@@ -1,16 +1,17 @@
-import { Router } from 'express';
-const router = Router();
+import express from 'express';
+const router = express.Router();
+import checkAuth from '../middleware/checkAuth.js';
 
-router.get('/', (req, res, next) => {
-    res.status(200).json({
-        message: 'Handling GET requests to /users'
-    });
-});
+import { getAllUsers, registerUser, LoginUser, getUser, deleteUser } from '../controllers/users.js';
 
-router.post('/', (req, res, next) => {
-    res.status(201).json({
-        message: 'Handling POST requests to /users'
-    });
-});
+router.get("/", checkAuth, getAllUsers);
+
+router.post("/register", registerUser);
+
+router.post("/login", LoginUser);
+
+router.get("/:userId", checkAuth, getUser);
+
+router.delete('/:userId', checkAuth, deleteUser);
 
 export default router;
