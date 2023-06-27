@@ -31,6 +31,7 @@ export const getAllPostRequests = (req, res, next) => {
 };
 
 export const makePostRequest = (req, res, next) => {
+  if (req.userData.role === "Admin") {
     Post.findById(req.body.postId)
       .then(post => {
         if (!post) {
@@ -65,4 +66,9 @@ export const makePostRequest = (req, res, next) => {
           error: err
         });
       });
+  } else {
+    return res.status(401).json({
+      message: "Auth failed"
+    });
+  }
 };
