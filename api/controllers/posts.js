@@ -2,37 +2,91 @@ import mongoose from 'mongoose';
 
 import Post from '../models/posts.js';
 
-export const getAllPosts = (req, res, next) => {
+export const authGetAllPosts = (req, res, next) => {
+  if (req.userData.role === "Admin") {
     Post.find()
-      .select("-__v")
-      .exec()
-      .then(docs => {
-        const response = {
-          count: docs.length,
-          posts: docs.map(doc => {
-            return {
-              ...doc._doc,
-              request: {
-                type: "GET",
-                url: `${req.protocol}://${req.headers.host}${req.url}posts/${doc._id}`
-              }
-            };
-          })
-        };
-        //   if (docs.length >= 0) {
-        res.status(200).json(response);
-        //   } else {
-        //       res.status(404).json({
-        //           message: 'No entries found'
-        //       });
-        //   }
-      })
-      .catch(err => {
-        console.log(err);
-        res.status(500).json({
-          error: err
-        });
+    .select("-__v")
+    .exec()
+    .then(docs => {
+      const response = {
+        count: docs.length,
+        posts: docs.map(doc => {
+          return {
+            ...doc._doc
+          };
+        })
+      };
+      //   if (docs.length >= 0) {
+      res.status(200).json(response);
+      //   } else {
+      //       res.status(404).json({
+      //           message: 'No entries found'
+      //       });
+      //   }
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
       });
+    });
+  } else {
+    Post.find({ "author": req.userData.userId })
+    .select("-__v")
+    .exec()
+    .then(docs => {
+      const response = {
+        count: docs.length,
+        posts: docs.map(doc => {
+          return {
+            ...doc._doc
+          };
+        })
+      };
+      //   if (docs.length >= 0) {
+      res.status(200).json(response);
+      //   } else {
+      //       res.status(404).json({
+      //           message: 'No entries found'
+      //       });
+      //   }
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
+  }
+};
+
+export const unauthGetAllPosts = (req, res, next) => {
+  Post.find({ "allowed": true })
+    .select("-__v")
+    .exec()
+    .then(docs => {
+      const response = {
+        count: docs.length,
+        posts: docs.map(doc => {
+          return {
+            ...doc._doc
+          };
+        })
+      };
+      //   if (docs.length >= 0) {
+      res.status(200).json(response);
+      //   } else {
+      //       res.status(404).json({
+      //           message: 'No entries found'
+      //       });
+      //   }
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
 };
 
 export const makePost = (req, res, next) => {
@@ -51,11 +105,7 @@ export const makePost = (req, res, next) => {
       res.status(201).json({
         message: "Post created successfully!",
         createdPost: {
-          ...result.toObject({ versionKey: false }),
-          request: {
-            type: "GET",
-            url: `${req.protocol}://${req.headers.host}${req.url}posts/${result._id}`
-          }
+          ...result.toObject({ versionKey: false })
         }
       });
     })
@@ -76,11 +126,7 @@ export const getPost = (req, res, next) => {
       console.log("From database", doc);
       if (doc) {
         res.status(200).json({
-          post: doc,
-          request: {
-              type: 'GET',
-              url: `${req.protocol}://${req.headers.host}/posts`
-          }
+          post: doc
         });
       } else {
         res
@@ -96,14 +142,12 @@ export const getPost = (req, res, next) => {
 
 export const editPost = (req, res, next) => {
   const id = req.params.postId;
-  Post.findByIdAndUpdate(id, { $set: req.body }, { new: true})
+  const { title, content } = req.body;
+  const updateFields = { title, content };
+  Post.findByIdAndUpdate(id, { $set: updateFields }, { new: true})
     .then(() => {
       res.status(200).json({
-        message: 'Post updated',
-        request: {
-            type: 'GET',
-            url: `${req.protocol}://${req.headers.host}/posts/${id}`
-        }
+        message: 'Post updated'
       })
     })
     .catch(err => res.status(500).json({ error: err}))
@@ -114,12 +158,7 @@ export const deletePost = (req, res, next) => {
   Post.findByIdAndRemove(id)
     .then(() => {
       res.status(200).json({
-        message: 'Post deleted',
-        request: {
-            type: 'POST',
-            url: `${req.protocol}://${req.headers.host}/posts`,
-            body: { title:'String', content:'String'}
-        }
+        message: 'Post deleted'
       })
     })
     .catch(err => res.status(500).json({ error: err}))

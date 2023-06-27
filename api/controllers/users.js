@@ -45,7 +45,8 @@ export const registerUser = (req, res, next) => {
                 email: req.body.email,
                 password: hash,
                 firstName: req.body.firstName,
-                lastName: req.body.lastName
+                lastName: req.body.lastName,
+                role: req.body.role
               });
               user
                 .save()
@@ -86,7 +87,8 @@ export const LoginUser = (req, res, next) => {
             const token = jwt.sign(
               {
                 email: user[0].email,
-                userId: user[0]._id
+                userId: user[0]._id,
+                role: user[0].role
               },
               process.env.JWT_KEY,
               {
@@ -120,11 +122,7 @@ export const getUser = (req, res, next) => {
       console.log("From database", doc);
       if (doc) {
         res.status(200).json({
-          User: doc,
-          request: {
-              type: 'GET',
-              url: `${req.protocol}://${req.headers.host}/users`
-          }
+          User: doc
         });
       } else {
         res
@@ -139,6 +137,7 @@ export const getUser = (req, res, next) => {
 };
 
 export const deleteUser = (req, res, next) => {
+  if ( req.userData.role === "Admin" ) {
     const id = req.params.userId;
     User.findByIdAndRemove(id)
       .then(() => {
@@ -147,4 +146,5 @@ export const deleteUser = (req, res, next) => {
         })
       })
       .catch(err => res.status(500).json({ error: err}))
+  }
 };

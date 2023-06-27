@@ -2,9 +2,16 @@ import { Router } from 'express';
 const router = Router();
 
 import checkAuth from '../middleware/checkAuth.js';
-import { getAllPosts, makePost, getPost, editPost, deletePost } from '../controllers/posts.js';
+import { authGetAllPosts, 
+        unauthGetAllPosts, 
+        makePost, 
+        getPost, 
+        editPost, 
+        deletePost } from '../controllers/posts.js';
 
-router.get("/", getAllPosts);
+router.get("/authenticated", checkAuth, authGetAllPosts);
+
+router.get("/unauthenticated", unauthGetAllPosts);
 
 router.post('/', checkAuth, makePost);
 

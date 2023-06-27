@@ -10,7 +10,9 @@ const userSchema = mongoose.Schema({
     },
     password: { type: String, required: true },
     firstName: { type: String, required: true },
-    lastName: { type: String, required: true }
+    lastName: { type: String, required: true },
+    role: { type: String, enum: ["User", "Admin", "Blogger"], default: "User"},
+    numberOfPosts: { type: Number, default: 0}
 });
 
 export default mongoose.model('User', userSchema);

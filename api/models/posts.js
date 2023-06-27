@@ -6,7 +6,7 @@ const postSchema = mongoose.Schema({
     content: {type: String, required: true},
     timestamp: Date,
     author: {type: mongoose.Schema.Types.ObjectId, ref:'User', required: true},
-    allowed: {type: Boolean, default: false}
+    allowed: {type: Boolean, ref: 'PostRequest', default: false}
 });
 
 export default mongoose.model('Post', postSchema);
