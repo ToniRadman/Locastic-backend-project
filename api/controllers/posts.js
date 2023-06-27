@@ -154,12 +154,14 @@ export const editPost = (req, res, next) => {
 };
 
 export const deletePost = (req, res, next) => {
-  const id = req.params.postId;
-  Post.findByIdAndRemove(id)
-    .then(() => {
-      res.status(200).json({
-        message: 'Post deleted'
+  if ( req.userData.role === "Admin") {
+    const id = req.params.postId;
+    Post.findByIdAndRemove(id)
+      .then(() => {
+        res.status(200).json({
+          message: 'Post deleted'
+        })
       })
-    })
-    .catch(err => res.status(500).json({ error: err}))
+      .catch(err => res.status(500).json({ error: err}))
+  }
 };
