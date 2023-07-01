@@ -3,10 +3,12 @@ const app = express();
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
+import swaggerUi from "swagger-ui-express";
 
 import postsRoutes from './api/routes/posts.js';
 import postRequestsRoutes from './api/routes/postRequests.js';
 import usersRoutes from './api/routes/users.js';
+import swaggerDocs from './api/utils/swagger.js';
 
 mongoose.connect(`mongodb+srv://toniradman2903:${process.env.MONGO_ATLAS_PW}@locastic-backend-projec.ngamevn.mongodb.net/`);
 
@@ -30,6 +32,11 @@ app.use((req, res, next) => {
 app.use('/posts', postsRoutes);
 app.use('/postRequests', postRequestsRoutes);
 app.use('/users', usersRoutes);
+
+const swaggerSpec = swaggerDocs();
+
+app.use('/docs', swaggerUi.serve);
+app.get('/docs', swaggerUi.setup(swaggerSpec));
 
 app.use((req, res, next) => {
     const error = new Error('Not found');

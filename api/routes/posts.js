@@ -7,7 +7,31 @@ import { authGetAllPosts,
         makePost, 
         getPost, 
         editPost, 
-        deletePost } from '../controllers/posts.js';
+        deletePost
+} from '../controllers/posts.js';
+
+/**
+ * @openapi
+ * /posts/authenticated:
+ *   get:
+ *     summary: Get all posts (authenticated)
+ *     description: Retrieve all posts when the user is authenticated
+ *     tags:
+ *       - Posts
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PostListResponse'
+ *       '401':
+ *         $ref: '#/components/responses/Unauthorized'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 
 router.get("/authenticated", checkAuth, authGetAllPosts);
 
