@@ -28,9 +28,9 @@ import { authGetAllPosts,
  *             schema:
  *               $ref: '#/components/schemas/PostListResponse'
  *       '401':
- *         $ref: '#/components/responses/Unauthorized'
+ *         description: Authentication failed
  *       '500':
- *         $ref: '#/components/responses/InternalServerError'
+ *         description: Server error
  */
 
 router.get("/authenticated", checkAuth, authGetAllPosts);

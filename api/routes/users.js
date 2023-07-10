@@ -22,7 +22,7 @@ import { getAllUsers, registerUser, LoginUser, getUser, deleteUser } from '../co
  *             schema:
  *               $ref: '#/components/schemas/UserListResponse'
  *       500:
- *         $ref: '#/components/responses/InternalServerError'
+ *         description: Server error
  */
 
 router.get("/", checkAuth, getAllUsers);
@@ -50,12 +50,8 @@ router.get("/", checkAuth, getAllUsers);
  *               $ref: '#/components/schemas/UserCreatedResponse'
  *       409:
  *         description: User with the provided email already exists
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ConflictResponse'
  *       500:
- *         $ref: '#/components/responses/InternalServerError'
+ *         description: Server error
  */
 
 router.post("/register", registerUser);
@@ -83,12 +79,8 @@ router.post("/register", registerUser);
  *               $ref: '#/components/schemas/LoginUserResponse'
  *       401:
  *         description: Authentication failed
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/UnauthorizedResponse'
  *       500:
- *         $ref: '#/components/responses/InternalServerError'
+ *         description: Server error
  */
 
 router.post("/login", LoginUser);
@@ -117,12 +109,8 @@ router.post("/login", LoginUser);
  *               $ref: '#/components/schemas/User'
  *       '404':
  *         description: User not found
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/NotFoundResponse'
  *       '500':
- *         $ref: '#/components/responses/InternalServerError'
+ *         description: Server error
  */
 
 router.get("/:userId", checkAuth, getUser);
@@ -147,14 +135,10 @@ router.get("/:userId", checkAuth, getUser);
  *     responses:
  *       '200':
  *         description: User deleted successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/SuccessResponse'
  *       '401':
- *         $ref: '#/components/responses/Unauthorized'
+ *         description: Authentication failed
  *       '500':
- *         $ref: '#/components/responses/InternalServerError'
+ *         description: Server error
  */
 
 router.delete('/:userId', checkAuth, deleteUser);
